@@ -1,0 +1,7 @@
+You will have an entire class hour to present your final project.
+(He probably means 0.5 of a class hour = 20-25 minutes)
+
+Final project presentations should include two key components: 
+	1. A tutorial on the area you explored. This should educate the rest of us about the area of
+		graphics you explored. In short, teach us some of what you learned working on your project.
+	2. A demonstration of what you implemented. This should focus on how you applied your new knowledge.
