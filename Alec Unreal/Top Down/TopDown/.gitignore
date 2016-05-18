@@ -22,6 +22,10 @@ $RECYCLE.BIN/
 /Intermediate
 /Saved
 
+*.sdf
+*.suo
+*.sln
+
 # =========================
 # Operating System Files
 # =========================
