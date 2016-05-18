@@ -17,6 +17,11 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+/Binaries
+/DerivedDataCache
+/Intermediate
+/Saved
+
 # =========================
 # Operating System Files
 # =========================
