@@ -92,6 +92,7 @@ function Hex(x, y, col, row, side)
     }
 
     this.setObstacle = function() {
+		this.onOptimalPath = false;
         this.typeIndicator = OBSTACLE_TILE;
         this.color = "rgb(96, 96, 96)";
     }
