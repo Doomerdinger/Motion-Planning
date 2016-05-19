@@ -7,7 +7,8 @@ function Hex(x, y, col, row, side)
     const TO_CHECK_TILE = 4;
     const CHECKED_TILE = 5;
     const OBJECTIVE_MET_TILE = 6;
-    const OPTIMAL_PATH_TILE = 7;
+    
+    this.onOptimalPath = false;
 
     this.side = side;
 
@@ -58,7 +59,12 @@ function Hex(x, y, col, row, side)
         this.draw(ctx, width, height);
     }
 
+    this.distanceTo = function(other) {
+        return Math.sqrt(Math.pow(this.col - other.col, 2) + Math.pow(this.row - other.row, 2));
+    }
+
     this.setEmpty = function() {
+        this.onOptimalPath = false;
         this.typeIndicator = EMPTY_TILE;
         this.color = "rgb(192, 192, 192)";
     }
@@ -96,7 +102,10 @@ function Hex(x, y, col, row, side)
 
     this.setToCheck = function() {
         this.typeIndicator = TO_CHECK_TILE;
-        this.color = "rgb(219, 169, 105)";
+
+        if(!this.onOptimalPath) {
+            this.color = "rgb(219, 169, 105)";
+        }
     }
 
     this.isToCheck = function() {
@@ -105,7 +114,10 @@ function Hex(x, y, col, row, side)
 
     this.setChecked = function() {
         this.typeIndicator = CHECKED_TILE;
-        this.color = "rgb(255, 124, 40)";
+
+        if(!this.onOptimalPath) {
+            this.color = "rgb(255, 124, 40)";
+        }
     }
 
     this.isChecked = function() {
@@ -122,12 +134,12 @@ function Hex(x, y, col, row, side)
     }
 
     this.setOptimalPath = function() {
-        this.typeIndicator = OPTIMAL_PATH_TILE;
+        this.onOptimalPath = true;
         this.color = "rgb(250, 221, 13)";
     }
 
     this.isOptimalPath = function() {
-        return this.typeIndicator == OPTIMAL_PATH_TILE;
+        return this.onOptimalPath;
     }
 
     // Default tiles to empty

@@ -1,6 +1,17 @@
 // Implementation of a* search
 
-function runAStar(hexGrid) {
+var running = false;
+
+function getSimTick(sliderId) {
+	return document.getElementById(sliderId).value;
+}
+
+function runAStar(hexGrid, sliderId) {
+
+	if(running) {
+		alert("Algorithm already in progress!");
+		return;
+	}
 
 	hexGrid.resetForRunningAlgorithm();
 
@@ -9,25 +20,13 @@ function runAStar(hexGrid) {
 		return;
 	}
 
-	var endHex = chooseGoal(hexGrid);
-	if(!endHex) {
-		alert("No waypoints set -- set objectives with RMB!");
-		return;
-	}
-
-	openList = [];
-	openList.push(hexGrid.startTile);
-
-	closedList = [];
-
-	var success = false;
-
-	var whileLoop = function() {
+	var whileLoop = function(slowEval) {
 
 			if (openList.length == 0)
 			{
+				running = false;
 				alert("No solution found!");
-				return;
+				return null;
 			}
 
 			// First, find the node in openList with the lowest f(x)
@@ -40,9 +39,7 @@ function runAStar(hexGrid) {
 			var hex = openList[lowIndex];
 
 			// Reached an objective -- break and choose a new objective point
-			if(hex.isObjectiveNode()) {
-				openList = [];
-				openList.push(hex);
+			if(hex == endHex) {
 				hex.setObjectiveMet();
 
 				// Modify the status of the hexes that were on the optimal path
@@ -52,18 +49,33 @@ function runAStar(hexGrid) {
 						current.setOptimalPath();
 					}
 					hexGrid.clearAndDrawHex(current);
-					current = current.parent;
+
+					var temp = current.parent;
+					current.parent = null;
+					current = temp;
 				}
 
-				success = true;
-				return;
+				goalList.splice(0, 1);
+				if(goalList.length == 0) {
+					running = false;
+					return hex.f;
+				}
+
+				// There are still goals left
+				hexGrid.clearCheckedAndToCheck();
+				endHex = goalList[0];
+				openList = [];
+				openList.push(endHex);
+				closedList = [];
+
+				lowIndex = 0;
 			}
 
 			// Remove this hex from the open list
 			openList.splice(lowIndex, 1);
 			closedList.push(hex);
 
-			if(!hex.isStart()) {
+			if(!hex.isStart() && !hex.isMetObjective() && !hex.isOptimalPath()) {
 				hex.setChecked();
 				hexGrid.clearAndDrawHex(hex);
 			}
@@ -72,8 +84,25 @@ function runAStar(hexGrid) {
 	        for(var i=0; i<neighbors.length; i++) {
 	        	var n = neighbors[i];
 
+	        	//The node we're going for isn't the best, so update
+	        	if(n.isObjectiveNode() && n != endHex) {
+	        		hexGrid.clearCheckedAndToCheck();
+	        		for(var j=0; j<goalList.length; j++) {
+	        			if(goalList[j] == n) {
+	        				goalList.splice(j, 1);
+	        				break;
+	        			}
+	        		}
+	        		goalList.unshift(n);
+	        		openList = [];
+	        		openList.push(closedList[0]);
+	        		endHex = n;
+	        		closedList = [];
+	        		break;
+	        	}
+
 	        	// No need to add obstacles or already-added hexes
-	        	if(n.isObstacle() || contains(closedList, n)) {
+	        	if(n.isObstacle() || n.isChecked()) {
 	        		continue;
 	        	}
 
@@ -81,7 +110,7 @@ function runAStar(hexGrid) {
 	        	var bestG = false;
 
 	        	// We have never seen this hex before
-	        	if(!contains(openList, n)) {
+	        	if(!n.isToCheck() && !n.isStart() && !n.isMetObjective()) {
 	        		bestG = true;
 	        		n.h = computeH(n, endHex); // since we've never seen it, we need to compute its h val
 
@@ -106,35 +135,73 @@ function runAStar(hexGrid) {
 	            hexGrid.clearAndDrawHex(n);
 	        }
 
-	        setTimeout(whileLoop, 50);
+        	if(slowEval) {
+        		var tick_ms = getSimTick(sliderId);
+				setTimeout(function() {whileLoop(tick_ms != 0)}, tick_ms);
+			}
+			else {
+				whileLoop(false);
+			}
 		}
 
-	setTimeout(whileLoop, 50);
+	running = true;
 
-	hexGrid.drawHexGrid();
+	openList = [];
+	openList.push(hexGrid.startTile);
+
+	closedList = [];
+
+	goalList = chooseGoals(hexGrid);
+	if(goalList.length == 0) {
+		alert("No waypoints set -- set objectives with RMB!");
+		return;
+	}
+
+	var endHex = goalList[0];
+
+	whileLoop(true);
 }
 
 function computeH(currHex, endHex) {
 	// return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row); // Manhattan dist
-	return Math.sqrt(Math.pow(currHex.col - endHex.col, 2) + Math.pow(currHex.row - endHex.row, 2)); // True dist
+	return currHex.distanceTo(endHex); // True dist
 }
 
-function contains(list, hex) {
-	for(var i=0; i<list.length; i++) {
-		if(list[i] == hex) {
-			return true;
-		}
-	}
-	return false;
-}
+function chooseGoals(hexGrid) {
+	var goals = [];
+	var allGoals = [];
 
-function chooseGoal(hexGrid) {
 	for (var col = 0; col < hexGrid.cols; col++) {
         for (var row = 0; row < hexGrid.rows; row++) {
             var hex = hexGrid.hexes[col][row];
+
             if(hex.isObjectiveNode()) {
-            	return hex; // TODO: currently just goes for the first objective node it sees!
+            	allGoals.push(hex);
             }
         }
     }
+
+    var currentComparator = hexGrid.startTile;
+	while (allGoals.length != 0) {
+		var nearestIndex = 0;
+    	var nearestHex = allGoals[0];
+		var dist = currentComparator.distanceTo(allGoals[0]);
+
+		for (var i = 1; i < allGoals.length; i++) {
+            var hex = allGoals[i];
+
+    		var newDist = hexGrid.startTile.distanceTo(hex);
+    		if(newDist < dist) {
+    			dist = newDist;
+    			nearestHex = hex;
+    			nearestIndex = i;
+    		}
+	    }
+
+	    currentComparator = nearestHex;
+    	goals.push(nearestHex);
+    	allGoals.splice(nearestIndex, 1);
+	}
+
+    return goals;
 }

@@ -10,14 +10,17 @@
 
 	<canvas id="hexcan" width="1000" height="700"></canvas>
     <script>
-        var hexagonGrid = new HexagonGrid("hexcan", 12, 5, 5, 30, 50);
+        var hexagonGrid = new HexagonGrid("hexcan", 12, 5, 5, 29, 50);
         hexagonGrid.drawHexGrid();
     </script>
 
     <table id="buttoncontainer">
     	<tr>
-    		<td><button type="button" onclick="runAStar(hexagonGrid)">Run A*</button></td>
-    		<td><button type="button" onclick="hexagonGrid.clearHexes();">Clear board</button></td>
+    		<td><button type="button" onclick="runAStar(hexagonGrid, 'slider')">Run A*</button></td>
+    		<td><button type="button" onclick="if(!running) { hexagonGrid.clearHexes(); }">Clear board</button></td>
     	</tr>
+        <tr>
+            <td><input id="slider" type="range" min="0" max="1000" value="40" Step ="1"/></td>
+        </tr>
     </table>
 </body>

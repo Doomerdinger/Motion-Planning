@@ -68,6 +68,24 @@ HexagonGrid.prototype.clearHexes = function() {
     this.drawHexGrid();
 }
 
+HexagonGrid.prototype.clearCheckedAndToCheck = function() {
+    for (var col = 0; col < this.cols; col++) {
+        for (var row = 0; row < this.rows; row++) {
+            var hex = this.hexes[col][row];
+            if(hex.isToCheck() || hex.isChecked()) {
+                if(hex.isOptimalPath()) {
+                    this.hexes[col][row].setEmpty();
+                    this.hexes[col][row].setOptimalPath();
+                }
+                else {
+                    this.hexes[col][row].setEmpty();
+                }
+            }
+        }
+    }
+    this.drawHexGrid();
+}
+
 HexagonGrid.prototype.resetForRunningAlgorithm = function() {
     for (var col = 0; col < this.cols; col++) {
         for (var row = 0; row < this.rows; row++) {
@@ -85,6 +103,7 @@ HexagonGrid.prototype.resetForRunningAlgorithm = function() {
             }
         }
     }
+    this.drawHexGrid();
 }
 
 HexagonGrid.prototype.getHexNeighbors = function(hex) {
