@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <head>
-    <title>Hex Astar Implementation</title>
-    <script src="hexagon.js"></script>
+    <title>Hex A* Implementation</title>
+    <script src="hexgrid.js"></script>
+    <script src="hex.js"></script>
+    <script src="astar.js"></script>
 </head>
 <body oncontextmenu="return false;">
 	<link rel="stylesheet" href="index.css">
@@ -14,7 +16,7 @@
 
     <table id="buttoncontainer">
     	<tr>
-    		<td><button type="button" onclick="alert('test')">Find path</button></td>
+    		<td><button type="button" onclick="runAStar(hexagonGrid)">Run A*</button></td>
     		<td><button type="button" onclick="hexagonGrid.clearHexes();">Clear board</button></td>
     	</tr>
     </table>

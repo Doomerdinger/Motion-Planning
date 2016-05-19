@@ -1,11 +1,11 @@
 // Originally authored by rrreese at https://github.com/rrreese/Hexagon.js
-// Edited by Jacob Knispel, Alec Tiefenthal, & Jayanth Shankar for motion planning
+// Edited by Advanced Graphics motion planning team
 
 // Hex math defined here: http://blog.ruslans.com/2011/02/hexagonal-grid-math.html
 
 function HexagonGrid(canvasId, radius, originX, originY, rows, cols) {
 
-    this.startTileExists = false;
+    this.startTile = false;
 
     this.radius = radius;
 
@@ -58,100 +58,74 @@ HexagonGrid.prototype.drawHexGrid = function () {
     }
 };
 
-function Hex(x, y, col, row, side)
-{
-    const EMPTY_TILE = 0;
-    const START_TILE = 1;
-    const OBJECTIVE_TILE = 2;
-    const OBSTACLE_TILE = 3;
-
-    this.side = side;
-
-    this.x = x;
-    this.y = y;
-
-    this.col = col;
-    this.row = row;
-
-    this.draw = function(ctx, width, height) {
-        ctx.strokeStyle = "#000";
-        ctx.beginPath();
-        ctx.moveTo(this.x + width - this.side, this.y);
-        ctx.lineTo(this.x + this.side, this.y);
-        ctx.lineTo(this.x + width, this.y + (height / 2));
-        ctx.lineTo(this.x + this.side, this.y + height);
-        ctx.lineTo(this.x + width - this.side, this.y + height);
-        ctx.lineTo(this.x, this.y + (height / 2));
-
-        ctx.fillStyle = this.color;
-        ctx.fill();
-
-        ctx.closePath();
-        ctx.stroke();
-    }
-
-    // This function clears the hexagon (instead of the whole canvas), then draws as normal
-    this.clearAndDraw = function(ctx, width, height) {
-
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.beginPath();
-        ctx.moveTo(this.x + width - this.side, this.y);
-        ctx.lineTo(this.x + this.side, this.y);
-        ctx.lineTo(this.x + width, this.y + (height / 2));
-        ctx.lineTo(this.x + this.side, this.y + height);
-        ctx.lineTo(this.x + width - this.side, this.y + height);
-        ctx.lineTo(this.x, this.y + (height / 2));
-        ctx.closePath()
-        ctx.fill();
-        ctx.globalCompositeOperation = 'source-over';
-
-        this.draw(ctx, width, height);
-    }
-
-    this.setEmpty = function() {
-        this.typeIndicator = EMPTY_TILE;
-        this.color = "rgb(192, 192, 192)";
-    }
-
-    this.isEmpty = function() {
-        return this.typeIndicator == EMPTY_TILE;
-    }
-
-    this.setStart = function() {
-        this.typeIndicator = START_TILE;
-        this.color = "rgb(255, 69, 0)";
-    }
-
-    this.isStart = function() {
-        return this.typeIndicator == START_TILE;
-    }
-
-    this.setObjectiveNode = function() {
-        this.typeIndicator = OBJECTIVE_TILE;
-        this.color = "rgb(154, 205, 50)";
-    }
-
-    this.isObjectiveNode = function(){
-        return this.typeIndicator == OBJECTIVE_TILE;
-    }
-
-    this.setObstacle = function() {
-        this.typeIndicator = OBSTACLE_TILE;
-        this.color = "rgb(96, 96, 96)";
-    }
-
-    // Default tiles to empty
-    this.setEmpty();
-};
-
 HexagonGrid.prototype.clearHexes = function() {
     for (var col = 0; col < this.cols; col++) {
         for (var row = 0; row < this.rows; row++) {
             this.hexes[col][row].setEmpty();
         }
     }
-    this.startTileExists = false;
+    this.startTile = false;
     this.drawHexGrid();
+}
+
+HexagonGrid.prototype.resetForRunningAlgorithm = function() {
+    for (var col = 0; col < this.cols; col++) {
+        for (var row = 0; row < this.rows; row++) {
+            var hex = this.hexes[col][row];
+            hex.f = 0;
+            hex.g = 0;
+            hex.h = 0;
+            hex.parent = null;
+
+            if(hex.isChecked() || hex.isToCheck() || hex.isOptimalPath()) {
+                hex.setEmpty();
+            }
+            else if(hex.isMetObjective()) {
+                hex.setObjectiveNode();
+            }
+        }
+    }
+}
+
+HexagonGrid.prototype.getHexNeighbors = function(hex) {
+
+    var neighbors = [];
+
+    if(hex) {
+        var x = hex.col;
+        var y = hex.row;
+
+        // Accounts for the staggered columns
+        var wAdj = hex.col % 2;
+        var eAdj = 1 - wAdj;
+
+        if(this.hexes[x-1]) {
+            if(this.hexes[x-1][y-1+wAdj]) {
+                neighbors.push(this.hexes[x-1][y-1+wAdj]); // NW
+            }
+            if(this.hexes[x-1][y+wAdj]) {
+                neighbors.push(this.hexes[x-1][y+wAdj]); // SW
+            }
+        }
+        if(this.hexes[x]) {
+            if(this.hexes[x][y-1]) {
+                neighbors.push(this.hexes[x][y-1]); // N
+            }
+            if(this.hexes[x][y+1]) {
+                neighbors.push(this.hexes[x][y+1]); // S
+            }
+        }
+        if(this.hexes[x+1]) {
+            if(this.hexes[x+1][y-eAdj]) {
+                neighbors.push(this.hexes[x+1][y-eAdj]); // NE
+            }
+            if(this.hexes[x+1][y+1-eAdj]) {
+                neighbors.push(this.hexes[x+1][y+1-eAdj]); // SE
+            }
+        }
+    }
+
+    return neighbors;
 }
 
 //Recusivly step up to the body to calculate canvas offset.
@@ -266,17 +240,17 @@ HexagonGrid.prototype.clickEvent = function (e) {
     {
         var tile = this.hexes[pos.x][pos.y];
 
-        if (!tile.isEmpty()) { // Any click on a nonempty tile
+        if (!(tile.isEmpty() || tile.isChecked() || tile.isOptimalPath())) { // Any click on a nonempty tile
 
             if(tile.isStart()) {
-                this.startTileExists = false;
+                this.startTile = false;
             }
 
             tile.setEmpty();
         }
-        else if(!this.startTileExists) { // Any click when a start tile doesn't exist yet
+        else if(!this.startTile) { // Any click when a start tile doesn't exist yet
             tile.setStart();
-            this.startTileExists = true;
+            this.startTile = tile;
         }
         else if(e.which == 1) { // Left click
             tile.setObstacle();
@@ -285,6 +259,10 @@ HexagonGrid.prototype.clickEvent = function (e) {
             tile.setObjectiveNode();
         }
 
-        tile.clearAndDraw(this.context, this.width, this.height);
+        this.clearAndDrawHex(tile);
     }
 };
+
+HexagonGrid.prototype.clearAndDrawHex = function(hex) {
+    hex.clearAndDraw(this.context, this.width, this.height);
+}
