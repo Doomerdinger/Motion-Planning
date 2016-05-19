@@ -240,7 +240,7 @@ HexagonGrid.prototype.clickEvent = function (e) {
     {
         var tile = this.hexes[pos.x][pos.y];
 
-        if (!(tile.isEmpty() || tile.isChecked() || tile.isOptimalPath())) { // Any click on a nonempty tile
+        if (!(tile.isEmpty() || tile.isChecked() || tile.isToCheck() || tile.isOptimalPath())) { // Any click on a nonempty tile
 
             if(tile.isStart()) {
                 this.startTile = false;

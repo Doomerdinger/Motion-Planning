@@ -96,7 +96,7 @@ function Hex(x, y, col, row, side)
 
     this.setToCheck = function() {
         this.typeIndicator = TO_CHECK_TILE;
-        this.color = "rgb(225, 50, 25)";
+        this.color = "rgb(219, 169, 105)";
     }
 
     this.isToCheck = function() {
