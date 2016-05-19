@@ -83,6 +83,7 @@ function Hex(x, y, col, row, side)
     }
 
     this.setObjectiveNode = function() {
+		this.onOptimalPath = false;
         this.typeIndicator = OBJECTIVE_TILE;
         this.color = "rgb(154, 205, 50)";
     }
