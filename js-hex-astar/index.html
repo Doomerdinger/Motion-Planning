@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+    <title>Hex Astar Implementation</title>
+    <script src="hexagon.js"></script>
+</head>
+<body oncontextmenu="return false;">
+	<link rel="stylesheet" href="index.css">
+
+	<canvas id="hexcan" width="1000" height="700"></canvas>
+    <script>
+        var hexagonGrid = new HexagonGrid("hexcan", 12, 5, 5, 30, 50);
+        hexagonGrid.drawHexGrid();
+    </script>
+
+    <table id="buttoncontainer">
+    	<tr>
+    		<td><button type="button" onclick="alert('test')">Find path</button></td>
+    		<td><button type="button" onclick="hexagonGrid.clearHexes();">Clear board</button></td>
+    	</tr>
+    </table>
+</body>
