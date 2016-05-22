@@ -65,6 +65,7 @@ HexagonGrid.prototype.clearHexes = function() {
         }
     }
     this.startTile = false;
+    clearBoard = false;
     this.drawHexGrid();
 }
 

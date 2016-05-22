@@ -1,15 +1,36 @@
 // Implementation of a* search
+//
 
 var running = false;
+var abort = false;
+var clearBoard = false;
 
+// Get the value of the slider bar determining simulation speed
 function getSimTick(sliderId) {
 	return document.getElementById(sliderId).value;
+}
+
+function runAlgorithm() {
+	if(running) {
+        abort = true;
+    }
+    else {
+        document.getElementById("runbtn").textContent = 'Abort';
+        runAStar(hexagonGrid, 'slider');
+    }
+}
+
+function endAlgorithm() {
+	abort = false;
+	running = false;
+
+	document.getElementById("runbtn").textContent = "Run";
 }
 
 function runAStar(hexGrid, sliderId) {
 
 	if(running) {
-		alert("Algorithm already in progress!");
+		alert("Algorithm already running!");
 		return;
 	}
 
@@ -22,11 +43,19 @@ function runAStar(hexGrid, sliderId) {
 
 	var whileLoop = function(slowEval) {
 
-			if (openList.length == 0)
-			{
-				running = false;
+			// Command to abort the algorithm has been issued
+			if (abort) {
+				if (clearBoard) {
+					hexGrid.clearHexes();
+				}
+				endAlgorithm();
+				return;
+			}
+
+			if (openList.length == 0) {
+				endAlgorithm();
 				alert("No solution found!");
-				return null;
+				return;
 			}
 
 			// First, find the node in openList with the lowest f(x)
@@ -57,8 +86,8 @@ function runAStar(hexGrid, sliderId) {
 
 				goalList.splice(0, 1);
 				if(goalList.length == 0) {
-					running = false;
-					return hex.f;
+					endAlgorithm();
+					return;
 				}
 
 				// There are still goals left
@@ -84,21 +113,33 @@ function runAStar(hexGrid, sliderId) {
 	        for(var i=0; i<neighbors.length; i++) {
 	        	var n = neighbors[i];
 
-	        	//The node we're going for isn't the best, so update
+	        	//The node we're going for isn't the best, so update (this is unnecessary, but results in better pathing)
 	        	if(n.isObjectiveNode() && n != endHex) {
-	        		hexGrid.clearCheckedAndToCheck();
-	        		for(var j=0; j<goalList.length; j++) {
-	        			if(goalList[j] == n) {
-	        				goalList.splice(j, 1);
+
+	        		//First make sure our original goal isn't already nearby
+	        		var goalNearby = false;
+	        		for(var j=0; j<neighbors.length; j++) {
+	        			if(neighbors[j] == endHex) {
+	        				goalNearby = true;
 	        				break;
 	        			}
 	        		}
-	        		goalList.unshift(n);
-	        		openList = [];
-	        		openList.push(closedList[0]);
-	        		endHex = n;
-	        		closedList = [];
-	        		break;
+
+	        		if(!goalNearby) {
+		        		hexGrid.clearCheckedAndToCheck();
+		        		for(var j=0; j<goalList.length; j++) {
+		        			if(goalList[j] == n) {
+		        				goalList.splice(j, 1);
+		        				break;
+		        			}
+		        		}
+		        		goalList.unshift(n);
+		        		openList = [];
+		        		openList.push(closedList[0]);
+		        		endHex = n;
+		        		closedList = [];
+		        		break;
+		        	}
 	        	}
 
 	        	// No need to add obstacles or already-added hexes
@@ -135,6 +176,7 @@ function runAStar(hexGrid, sliderId) {
 	            hexGrid.clearAndDrawHex(n);
 	        }
 
+	        // Determines speed of evaluation based on the slider
         	if(slowEval) {
         		var tick_ms = getSimTick(sliderId);
 				setTimeout(function() {whileLoop(tick_ms != 0)}, tick_ms);
@@ -144,8 +186,6 @@ function runAStar(hexGrid, sliderId) {
 			}
 		}
 
-	running = true;
-
 	openList = [];
 	openList.push(hexGrid.startTile);
 
@@ -153,17 +193,19 @@ function runAStar(hexGrid, sliderId) {
 
 	goalList = chooseGoals(hexGrid);
 	if(goalList.length == 0) {
+		endAlgorithm();
 		alert("No waypoints set -- set objectives with RMB!");
 		return;
 	}
 
 	var endHex = goalList[0];
 
+	running = true;
 	whileLoop(true);
 }
 
 function computeH(currHex, endHex) {
-	// return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row); // Manhattan dist
+	// return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row); // Manhattan (city block) dist
 	return currHex.distanceTo(endHex); // True dist
 }
 
