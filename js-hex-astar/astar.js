@@ -164,6 +164,8 @@ function runAStar(hexGrid, sliderId) {
 
 function computeH(currHex, endHex) {
 	// return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row); // Manhattan dist
+	//return Math.max( Math.abs(currHex.row - endHex.row), Math.abs(Math.ceil(endHex.row/-2)+ endHex.col - Math.ceil(currHex.row/-2) - currHex.col), Math.abs(-endHex.row - Math.ceil(endHex.row /-2) - endHex.col + currHex.row  + Math.ceil(currHex.row/-2) +currHex.col ));
+
 	return currHex.distanceTo(endHex); // True dist
 }
 
