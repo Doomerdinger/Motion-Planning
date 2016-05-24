@@ -17,7 +17,7 @@
     <table id="buttoncontainer">
     	<tr>
     		<td><button type="button" onclick="runAStar(hexagonGrid, 'slider')">Run A*</button></td>
-    		<td><button type="button" onclick="if(!running) { hexagonGrid.clearHexes(); }">Clear board</button></td>
+    		<td><button type="button" onclick="if(!running) { hexagonGrid.clearHexes(); resetNodesVisited(); }">Clear board</button></td>
         <td><button type="button" onclick="toggleHeuristic()"> Toggle Heuristic </button></td>
         <td><div id = "nv"> </div></td>
 

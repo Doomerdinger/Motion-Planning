@@ -4,12 +4,21 @@ var running = false;
 
 var regularHeuristic = true;
 
+var nodesVisited = 0;
+
 function getSimTick(sliderId) {
 	return document.getElementById(sliderId).value;
 }
 
 function howManyNodesVisited(){
-	document.getElementById('nv').innerHTML = "Number of Nodes Visited: " + closedList.length;
+	nodesVisited += closedList.length;
+	document.getElementById('nv').innerHTML = "Number of Nodes Visited: " + nodesVisited;
+
+}
+
+function resetNodesVisited(){
+	nodesVisited = 0;
+	document.getElementById('nv').innerHTML = "Number of Nodes Visited: " + nodesVisited;
 
 }
 
@@ -27,7 +36,7 @@ function runAStar(hexGrid, sliderId) {
 		return;
 	}
 
-	document.getElementById('nv').innerHTML = "";
+	document.getElementById('nv').innerHTML = "Number of Nodes Visited: " + nodesVisited;
 	var whileLoop = function(slowEval) {
 
 			if (openList.length == 0)
@@ -36,6 +45,7 @@ function runAStar(hexGrid, sliderId) {
 				alert("No solution found!");
 				return null;
 			}
+
 
 			// First, find the node in openList with the lowest f(x)
 			var lowIndex = 0;
