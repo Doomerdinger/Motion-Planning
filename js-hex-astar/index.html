@@ -16,8 +16,8 @@
 
     <table id="buttoncontainer">
     	<tr>
-    		<td><button type="button" onclick="runAlgorithm();" id="runbtn">Run</button></td>
-    		<td><button type="button" onclick="hexagonGrid.clearHexes(); abort = running; clearBoard = running;">Clear board</button></td>
+    		<td><button type="button" onclick="runAStar(hexagonGrid, 'slider')">Run A*</button></td>
+    		<td><button type="button" onclick="if(!running) { hexagonGrid.clearHexes(); }">Clear board</button></td>
     	</tr>
         <tr>
             <td><input id="slider" type="range" min="0" max="1000" value="40" Step ="1"/></td>
