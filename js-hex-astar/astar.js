@@ -2,8 +2,15 @@
 
 var running = false;
 
+var regularHeuristic = true;
+
 function getSimTick(sliderId) {
 	return document.getElementById(sliderId).value;
+}
+
+function howManyNodesVisited(){
+	document.getElementById('nv').innerHTML = "Number of Nodes Visited: " + closedList.length;
+
 }
 
 function runAStar(hexGrid, sliderId) {
@@ -20,6 +27,7 @@ function runAStar(hexGrid, sliderId) {
 		return;
 	}
 
+	document.getElementById('nv').innerHTML = "";
 	var whileLoop = function(slowEval) {
 
 			if (openList.length == 0)
@@ -41,6 +49,7 @@ function runAStar(hexGrid, sliderId) {
 			// Reached an objective -- break and choose a new objective point
 			if(hex == endHex) {
 				hex.setObjectiveMet();
+				howManyNodesVisited();
 
 				// Modify the status of the hexes that were on the optimal path
 				var current = hex;
@@ -162,11 +171,18 @@ function runAStar(hexGrid, sliderId) {
 	whileLoop(true);
 }
 
+function toggleHeuristic(){
+	regularHeuristic = !regularHeuristic;
+}
+
 function computeH(currHex, endHex) {
 	// return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row); // Manhattan dist
-	//return Math.max( Math.abs(currHex.row - endHex.row), Math.abs(Math.ceil(endHex.row/-2)+ endHex.col - Math.ceil(currHex.row/-2) - currHex.col), Math.abs(-endHex.row - Math.ceil(endHex.row /-2) - endHex.col + currHex.row  + Math.ceil(currHex.row/-2) +currHex.col ));
 
-	return currHex.distanceTo(endHex); // True dist
+	if(regularHeuristic){
+		return currHex.distanceTo(endHex); //Simple distance calculation
+	}
+	return Math.max( Math.abs(currHex.row - endHex.row), Math.abs(Math.ceil(endHex.row/-2)+ endHex.col - Math.ceil(currHex.row/-2) - currHex.col), Math.abs(-endHex.row - Math.ceil(endHex.row /-2) - endHex.col + currHex.row  + Math.ceil(currHex.row/-2) +currHex.col ));
+	// Hexagonal grid distance(taking into account 6 possible neighbors to travel)
 }
 
 function chooseGoals(hexGrid) {
