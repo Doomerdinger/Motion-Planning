@@ -1,0 +1,22 @@
+#title {
+	color: black;
+	font-weight: bold;
+	font-size: 35pt;
+	position: absolute;
+	top: 5%;
+	left: 4%;
+}
+
+#link-tree {
+	color: black;
+	font-weight: bold;
+	font-size: 25pt;
+	position: absolute;
+	top: 22%;
+	left: 7%;
+}
+
+#links {
+	font-weight: normal;
+	font-size: 23pt;
+}

@@ -1,0 +1,17 @@
+#back-link {
+	color: black;
+	font-weight: normal;
+	font-size: 11pt;
+	position: absolute;
+	top: 5%;
+	left: 2%;
+}
+
+#report-body {
+	color: black;
+	font-weight: normal;
+	font-size: 16pt;
+	position: absolute;
+	top: 15%;
+	left: 5%;
+}
