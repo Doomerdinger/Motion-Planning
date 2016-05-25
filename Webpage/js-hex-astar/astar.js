@@ -206,12 +206,20 @@ function runAStar(hexGrid, sliderId) {
 }
 
 function computeH(currHex, endHex) {
-	// return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row); // Manhattan (city block) dist
-	// return Math.max(Math.abs(currHex.row - endHex.row), 
-	// 				Math.abs(Math.ceil(endHex.row/-2) + endHex.col - Math.ceil(currHex.row/-2) - currHex.col), 
-	// 				Math.abs(-endHex.row - Math.ceil(endHex.row /-2) - endHex.col + currHex.row + Math.ceil(currHex.row/-2) +currHex.col)
-	// 				);
-	return currHex.distanceTo(endHex);
+	// Manhattan distance
+	//return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row); // Manhattan (city block) dist
+	
+	// Uses real distance function
+	//return currHex.distanceTo(endHex);
+	
+	// Diagonal shortcut
+	var xDistance = Math.abs(currHex.col - endHex.col);
+	var yDistance = Math.abs(currHex.row - endHex.row);
+	if(xDistance > yDistance) {
+		return 1.4*yDistance + (xDistance - yDistance);
+	} else {
+		return 1.4*xDistance + (yDistance - xDistance);
+	}
 }
 
 function chooseGoals(hexGrid) {
