@@ -60,7 +60,10 @@ function Hex(x, y, col, row, side)
     }
 
     this.distanceTo = function(other) {
-        return Math.sqrt(Math.pow(this.col - other.col, 2) + Math.pow(this.row - other.row, 2));
+        return Math.max(Math.abs(this.row - other.row), 
+                    Math.abs(Math.ceil(other.row/-2) + other.col - Math.ceil(this.row/-2) - this.col), 
+                    Math.abs(-other.row - Math.ceil(other.row /-2) - other.col + this.row + Math.ceil(this.row/-2) + this.col)
+                    );
     }
 
     this.setEmpty = function() {

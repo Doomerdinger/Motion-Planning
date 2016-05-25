@@ -1,0 +1,14 @@
+#link-tree {
+	color: black;
+	font-weight: bold;
+	font-size: 25;
+	position: absolute;
+	top: 25%;
+	left: 5%;
+}
+
+#links {
+	color: black;
+	font-weight: normal;
+	font-size: 23;
+}
