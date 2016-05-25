@@ -14,8 +14,13 @@ function runAlgorithm() {
 	if(running) {
         abort = true;
     }
+    else if(!hexagonGrid.startTile) {
+    	alert("No start node was defined, nothing to do!");
+		return;
+    }
     else {
         document.getElementById("runbtn").textContent = 'Abort';
+        updateVisitedNodes(0);
         runAStar(hexagonGrid, 'slider');
     }
 }
@@ -27,19 +32,13 @@ function endAlgorithm() {
 	document.getElementById("runbtn").textContent = "Run";
 }
 
+function updateVisitedNodes(visitedNodes) {
+	document.getElementById("info-hud").innerHTML = "Nodes visited: " + visitedNodes;
+}
+
 function runAStar(hexGrid, sliderId) {
 
-	if(running) {
-		alert("Algorithm already running!");
-		return;
-	}
-
 	hexGrid.resetForRunningAlgorithm();
-
-	if(!hexGrid.startTile) {
-		alert("No start node was defined, nothing to do!");
-		return;
-	}
 
 	var whileLoop = function(slowEval) {
 
@@ -103,6 +102,7 @@ function runAStar(hexGrid, sliderId) {
 			// Remove this hex from the open list
 			openList.splice(lowIndex, 1);
 			closedList.push(hex);
+			updateVisitedNodes(++visitedNodes);
 
 			if(!hex.isStart() && !hex.isMetObjective() && !hex.isOptimalPath()) {
 				hex.setChecked();
@@ -199,6 +199,7 @@ function runAStar(hexGrid, sliderId) {
 	}
 
 	var endHex = goalList[0];
+	var visitedNodes = 0;
 
 	running = true;
 	whileLoop(true);
@@ -206,7 +207,11 @@ function runAStar(hexGrid, sliderId) {
 
 function computeH(currHex, endHex) {
 	// return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row); // Manhattan (city block) dist
-	return currHex.distanceTo(endHex); // True dist
+	return Math.max(Math.abs(currHex.row - endHex.row), 
+					Math.abs(Math.ceil(endHex.row/-2) + endHex.col - Math.ceil(currHex.row/-2) - currHex.col), 
+					Math.abs(-endHex.row - Math.ceil(endHex.row /-2) - endHex.col + currHex.row + Math.ceil(currHex.row/-2) +currHex.col)
+					);
+	//return currHex.distanceTo(endHex); // True dist
 }
 
 function chooseGoals(hexGrid) {
