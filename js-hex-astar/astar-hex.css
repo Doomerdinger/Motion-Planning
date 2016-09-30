@@ -1,0 +1,21 @@
+#button-container {
+    position:absolute;
+    bottom: 5%;
+    right:50%;
+}
+
+#info-hud {
+	pointer-events: none;
+	color: yellow;
+	font-weight: bold;
+	font-size: 20pt;
+	position: absolute;
+	top: 90%;
+	left: 5%;
+
+	text-shadow:
+	    -1px -1px 0 #000,
+	    1px -1px 0 #000,
+	    -1px 1px 0 #000,
+	    1px 1px 0 #000;
+}
