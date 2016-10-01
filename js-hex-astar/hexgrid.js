@@ -87,6 +87,10 @@ HexagonGrid.prototype.clearHexes = function() {
     this.startTile = false;
     clearBoard = false;
     this.drawHexGrid();
+
+    mouseDown = [0, 0, 0];
+    someButtonDown = 0;
+    lastTileClicked = null;
 }
 
 HexagonGrid.prototype.clearCheckedAndToCheck = function() {
