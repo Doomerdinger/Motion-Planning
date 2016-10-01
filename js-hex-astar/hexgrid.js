@@ -48,19 +48,24 @@ function HexagonGrid(canvasId, radius, originX, originY, rows, cols) {
         offsetColumn = !offsetColumn;
     }
 
-    document.body.onmousedown = function(e) { 
-        ++mouseDown[e.button];
-        ++someButtonDown;
-    }
     document.body.onmouseup = function(e) {
         lastTileClicked = null;
         --mouseDown[e.button];
         --someButtonDown;
     }
-    // document.body.addEventListener("mousedown", this.mouseDownEvent.bind(this), true)
-    // document.body.addEventListener("mouseup", this.mouseUpEvent.bind(this), true)
+
+    this.canvas.addEventListener("mousedown", this.test.bind(this), false);
     this.canvas.addEventListener("mousemove", this.mouseMoveEvent.bind(this), false);
 };
+
+HexagonGrid.prototype.test = function (e) {
+    if(!mouseDown[e.button]) {
+        ++mouseDown[e.button];
+        ++someButtonDown;
+    }
+
+    this.mouseMoveEvent(e);
+}
 
 HexagonGrid.prototype.drawHexGrid = function () {
     
