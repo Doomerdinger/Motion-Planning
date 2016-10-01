@@ -3,6 +3,10 @@
 
 // Hex math defined here: http://blog.ruslans.com/2011/02/hexagonal-grid-math.html
 
+mouseDown = [0, 0, 0];
+someButtonDown = 0;
+lastTileClicked = null;
+
 function HexagonGrid(canvasId, radius, originX, originY, rows, cols) {
 
     this.startTile = false;
@@ -44,7 +48,18 @@ function HexagonGrid(canvasId, radius, originX, originY, rows, cols) {
         offsetColumn = !offsetColumn;
     }
 
-    this.canvas.addEventListener("mousedown", this.clickEvent.bind(this), false);
+    document.body.onmousedown = function(e) { 
+        ++mouseDown[e.button];
+        ++someButtonDown;
+    }
+    document.body.onmouseup = function(e) {
+        lastTileClicked = null;
+        --mouseDown[e.button];
+        --someButtonDown;
+    }
+    // document.body.addEventListener("mousedown", this.mouseDownEvent.bind(this), true)
+    // document.body.addEventListener("mouseup", this.mouseUpEvent.bind(this), true)
+    this.canvas.addEventListener("mousemove", this.mouseMoveEvent.bind(this), false);
 };
 
 HexagonGrid.prototype.drawHexGrid = function () {
@@ -247,7 +262,11 @@ HexagonGrid.prototype.isPointInTriangle = function isPointInTriangle(pt, v1, v2,
     return ((b1 == b2) && (b2 == b3));
 };
 
-HexagonGrid.prototype.clickEvent = function (e) {
+HexagonGrid.prototype.mouseMoveEvent = function (e) {
+
+    if(!someButtonDown) {
+        return;
+    }
 
     var mouseX = e.pageX;
     var mouseY = e.pageY;
@@ -256,11 +275,16 @@ HexagonGrid.prototype.clickEvent = function (e) {
     var localY = mouseY - this.canvasOriginY;
 
     var pos = this.getSelectedTile(localX, localY);
+    if(lastTileClicked && lastTileClicked.x == pos.x && lastTileClicked.y == pos.y) {
+        return;
+    }
+    lastTileClicked = pos;
+
     if(pos.x < this.cols && pos.y < this.rows && pos.x >= 0 && pos.y >= 0)
     {
         var tile = this.hexes[pos.x][pos.y];
 
-        if (!(tile.isEmpty() || tile.isChecked() || tile.isToCheck() || tile.isOptimalPath())) { // Any click on a nonempty tile
+        if(!(tile.isEmpty() || tile.isChecked() || tile.isToCheck() || tile.isOptimalPath())) { // Any click on a nonempty tile
 
             if(tile.isStart()) {
                 this.startTile = false;
@@ -272,10 +296,10 @@ HexagonGrid.prototype.clickEvent = function (e) {
             tile.setStart();
             this.startTile = tile;
         }
-        else if(e.which == 1) { // Left click
+        else if(mouseDown[0]) { // Left click
             tile.setObstacle();
         }
-        else if(e.which == 3) { // Right click
+        else if(mouseDown[2]) { // Right click
             tile.setObjectiveNode();
         }
 
