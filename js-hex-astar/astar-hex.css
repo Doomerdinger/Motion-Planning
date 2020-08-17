@@ -25,8 +25,13 @@ html, body {
 }
 
 #btnorigin {
+	border-width: 5px;
 	border-color: #f44336;
 	color: red;
+}
+
+#btnorigin:hover {
+	background-color: #F9C0C4;
 }
 
 #btnwaypoint {
@@ -34,14 +39,26 @@ html, body {
 	color: green;
 }
 
+#btnwaypoint:hover {
+	background-color: lightgreen;
+}
+
 #btnobstacle {
 	border-color: darkslategray;
 	color: darkslategray;
 }
 
+#btnobstacle:hover {
+	background-color: #F0EEEB;
+}
+
 #btneraser {
 	border-color: gray;
 	color: gray;
+}
+
+#btneraser:hover {
+	background-color: #F8F8FF;
 }
 
 #speed-slider {

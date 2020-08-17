@@ -5,6 +5,7 @@
     <script src="hexgrid.js"></script>
     <script src="hex.js"></script>
     <script src="astar.js"></script>
+    <script src="interactivestyle.js"></script>
 </head>
 <body oncontextmenu="return false;">
 	<link rel="stylesheet" href="astar-hex.css">
@@ -14,11 +15,6 @@
     <div id="canvas-container">
         <canvas id="hexcan" class="noselect"></canvas>
     </div>
-
-    <script>
-        var hexagonGrid = new HexagonGrid("hexcan", 15, 20, 20);
-        hexagonGrid.drawHexGrid();
-    </script>
 
     <table id="button-container">
     	<tr>
@@ -41,10 +37,16 @@
             </td>
         </tr>
         <tr>
-            <td><button id="btnorigin" class="brushbutton noselect" type="button" onclick="hexagonGrid.setBrush(brushType.ORIGIN);">Start Position</button></td>
-            <td><button id="btnwaypoint" class="brushbutton noselect" type="button" onclick="hexagonGrid.setBrush(brushType.GOAL);">Waypoint</button></td>
-            <td><button id="btnobstacle" class="brushbutton noselect" type="button" onclick="hexagonGrid.setBrush(brushType.OBSTACLE);">Obstacle</button></td>
-            <td><button id="btneraser" class="brushbutton noselect" type="button" onclick="hexagonGrid.setBrush(brushType.ERASER);">Eraser</button></td>
+            <td><button id="btnorigin" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ORIGIN)">Start Position</button></td>
+            <td><button id="btnwaypoint" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.GOAL);">Waypoint</button></td>
+            <td><button id="btnobstacle" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.OBSTACLE);">Obstacle</button></td>
+            <td><button id="btneraser" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ERASER);">Eraser</button></td>
         </tr>
     </table>
 </body>
+
+<script>
+    var hexagonGrid = new HexagonGrid("hexcan", 15, 20, 20);
+    hexagonGrid.drawHexGrid();
+    selectedButton = document.getElementById("btnorigin");
+</script>
