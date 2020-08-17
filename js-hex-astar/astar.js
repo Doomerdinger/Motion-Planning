@@ -14,7 +14,7 @@ function runAlgorithm() {
         abort = true;
     }
     else if(!hexagonGrid.startTile) {
-    	alert("No start node was defined, nothing to do!");
+    	alert("You must have a starting position set");
 		return;
     }
     else {
@@ -193,7 +193,7 @@ function runAStar(hexGrid, sliderId) {
 	goalList = chooseGoals(hexGrid);
 	if(goalList.length == 0) {
 		endAlgorithm();
-		alert("No waypoints set -- set objectives with RMB!");
+		alert("You must add at least one waypoint");
 		return;
 	}
 

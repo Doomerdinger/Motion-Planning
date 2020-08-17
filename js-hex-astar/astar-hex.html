@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
     <title>Hex A* Implementation</title>
+    <script src="brushes.js"></script>
     <script src="hexgrid.js"></script>
     <script src="hex.js"></script>
     <script src="astar.js"></script>
@@ -26,6 +27,12 @@
     	</tr>
         <tr>
             <td><input id="slider" type="range" min="0" max="1000" value="40" Step ="1"/></td>
+        </tr>
+        <tr>
+            <td><button type="button" onclick="hexagonGrid.setBrush(brushType.ORIGIN);" id="runbtn">Start Position</button></td>
+            <td><button type="button" onclick="hexagonGrid.setBrush(brushType.GOAL);" id="runbtn">Waypoint</button></td>
+            <td><button type="button" onclick="hexagonGrid.setBrush(brushType.OBSTACLE);" id="runbtn">Obstacle</button></td>
+            <td><button type="button" onclick="hexagonGrid.setBrush(brushType.ERASER);" id="runbtn">Eraser</button></td>
         </tr>
     </table>
 </body>

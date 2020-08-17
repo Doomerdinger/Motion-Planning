@@ -3,13 +3,12 @@
 
 // Hex math defined here: http://blog.ruslans.com/2011/02/hexagonal-grid-math.html
 
-mouseDown = [0, 0, 0];
-someButtonDown = 0;
 lastTileClicked = null;
 
 function HexagonGrid(canvasId, radius, originX, originY) {
 
     this.startTile = false;
+    this.currentBrush = brushType.ORIGIN;
 
     this.radius = radius;
 
@@ -58,23 +57,12 @@ function HexagonGrid(canvasId, radius, originX, originY) {
         offsetColumn = !offsetColumn;
     }
 
-    document.body.onmouseup = function(e) {
-        lastTileClicked = null;
-        --mouseDown[e.button];
-        --someButtonDown;
-    }
-
-    this.canvas.addEventListener("mousedown", this.test.bind(this), false);
+    this.canvas.addEventListener("mousedown", this.mouseMoveEvent.bind(this), false);
     this.canvas.addEventListener("mousemove", this.mouseMoveEvent.bind(this), false);
 };
 
-HexagonGrid.prototype.test = function (e) {
-    if(!mouseDown[e.button]) {
-        ++mouseDown[e.button];
-        ++someButtonDown;
-    }
-
-    this.mouseMoveEvent(e);
+HexagonGrid.prototype.setBrush = function (newBrush) {
+    this.currentBrush = newBrush;
 }
 
 HexagonGrid.prototype.drawHexGrid = function () {
@@ -98,9 +86,9 @@ HexagonGrid.prototype.clearHexes = function() {
     clearBoard = false;
     this.drawHexGrid();
 
-    mouseDown = [0, 0, 0];
-    someButtonDown = 0;
     lastTileClicked = null;
+
+    document.getElementById("info-hud").innerHTML = "";
 }
 
 HexagonGrid.prototype.clearCheckedAndToCheck = function() {
@@ -283,7 +271,11 @@ HexagonGrid.prototype.isPointInTriangle = function isPointInTriangle(pt, v1, v2,
 
 HexagonGrid.prototype.mouseMoveEvent = function (e) {
 
-    if(!someButtonDown) {
+    var leftMouseDown = e.buttons === undefined ?
+        e.which === 1 :
+        (e.buttons & 1) === 1;
+
+    if(!leftMouseDown) {
         return;
     }
 
@@ -302,24 +294,37 @@ HexagonGrid.prototype.mouseMoveEvent = function (e) {
     if(pos.x < this.cols && pos.y < this.rows && pos.x >= 0 && pos.y >= 0)
     {
         var tile = this.hexes[pos.x][pos.y];
+        switch (this.currentBrush)
+        {
+            case brushType.ERASER:
+                if (tile.isStart()) {
+                    this.startTile = false;
+                }
+                tile.setEmpty();
+                break;
+            
+            case brushType.ORIGIN:
+                if (this.startTile) { // Only one start tile allowed
+                    this.startTile.setEmpty();
+                    this.clearAndDrawHex(this.startTile);
+                }
+                tile.setStart();
+                this.startTile = tile;
+                break;
 
-        if(!(tile.isEmpty() || tile.isChecked() || tile.isToCheck() || tile.isOptimalPath())) { // Any click on a nonempty tile
+            case brushType.GOAL:
+                if (tile.isStart()) {
+                    this.startTile = false;
+                }
+                tile.setObjectiveNode();
+                break;
 
-            if(tile.isStart()) {
-                this.startTile = false;
-            }
-
-            tile.setEmpty();
-        }
-        else if(!this.startTile) { // Any click when a start tile doesn't exist yet
-            tile.setStart();
-            this.startTile = tile;
-        }
-        else if(mouseDown[0]) { // Left click
-            tile.setObstacle();
-        }
-        else if(mouseDown[2]) { // Right click
-            tile.setObjectiveNode();
+            case brushType.OBSTACLE:
+                if (tile.isStart()) {
+                    this.startTile = false;
+                }
+                tile.setObstacle();
+                break;
         }
 
         this.clearAndDrawHex(tile);
