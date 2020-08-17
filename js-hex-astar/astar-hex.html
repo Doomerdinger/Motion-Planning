@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
     <title>Hex A* Implementation</title>
-    <script src="brushes.js"></script>
+    <script src="hexenum.js"></script>
     <script src="hexgrid.js"></script>
     <script src="hex.js"></script>
     <script src="astar.js"></script>
@@ -26,7 +26,16 @@
     		<td><button type="button" onclick="hexagonGrid.clearHexes(); abort = running; clearBoard = running;">Clear board</button></td>
     	</tr>
         <tr>
-            <td><input id="slider" type="range" min="0" max="80" value="40" step ="1" oninput="onSpeedChange()"/></td>
+            <td><input id="slider" type="range" min="0" max="80" value="40" step="1" oninput="onSpeedChange()"/></td>
+            <td>
+            <label for="heuristicDropdown">Heuristic method:</label>
+                <select name="heuristicDropdown" id="heuristicDropdown" onchange="onHeuristicChange(this.value)">
+                    <option value="3">Diagonal Shortcut</option>
+                    <option value="1">Manhattan Distance</option>
+                    <option value="2">Real Distance</option>
+                    <option value="0">None</option>
+                </select>
+            </td>
         </tr>
         <tr>
             <td><button type="button" onclick="hexagonGrid.setBrush(brushType.ORIGIN);" id="runbtn">Start Position</button></td>

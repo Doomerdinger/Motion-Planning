@@ -3,6 +3,7 @@
 var running = false;
 var abort = false;
 var clearBoard = false;
+var heuristic;
 
 var timeoutHandle;
 var funcRequeueEval;
@@ -18,6 +19,10 @@ function onSpeedChange() {
 		clearTimeout(timeoutHandle);
 		funcRequeueEval();
 	}
+}
+
+function onHeuristicChange(newValue) {
+	heuristic = parseInt(newValue);
 }
 
 function runAlgorithm() {
@@ -222,19 +227,24 @@ function runAStar(hexGrid, sliderId) {
 
 // Heuristic function
 function computeH(currHex, endHex) {
-	// Manhattan (city block) distance
-	//return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row);
-	
-	// Uses real distance function
-	//return currHex.distanceTo(endHex);
-	
-	// Diagonal shortcut
-	var xDistance = Math.abs(currHex.col - endHex.col);
-	var yDistance = Math.abs(currHex.row - endHex.row);
-	if(xDistance > yDistance) {
-		return 1.4*yDistance + (xDistance - yDistance);
-	} else {
-		return 1.4*xDistance + (yDistance - xDistance);
+	switch (heuristic) {
+		case heuristicMethod.MANHATTAN: // Manhattan (city block) distance
+			return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row);
+		
+		case heuristicMethod.DISTANCE: // Uses real distance function
+			return currHex.distanceTo(endHex);
+		
+		case heuristicMethod.DIAGONAL_SHORTCUT: // Diagonal shortcut
+			var xDistance = Math.abs(currHex.col - endHex.col);
+			var yDistance = Math.abs(currHex.row - endHex.row);
+			if(xDistance > yDistance) {
+				return 1.4*yDistance + (xDistance - yDistance);
+			} else {
+				return 1.4*xDistance + (yDistance - xDistance);
+			}
+
+		default:
+			return -100;
 	}
 }
 
