@@ -3,7 +3,7 @@
 var running = false;
 var abort = false;
 var clearBoard = false;
-var heuristic;
+var heuristic = heuristicMethod.DIAGONAL_SHORTCUT;
 
 var timeoutHandle;
 var funcRequeueEval;
@@ -36,7 +36,7 @@ function runAlgorithm() {
     else {
         document.getElementById("runbtn").textContent = 'Abort';
         updateVisitedNodes(0);
-        runAStar(hexagonGrid, 'slider');
+        runAStar(hexagonGrid, 'speed-slider');
     }
 }
 
@@ -237,10 +237,10 @@ function computeH(currHex, endHex) {
 		case heuristicMethod.DIAGONAL_SHORTCUT: // Diagonal shortcut
 			var xDistance = Math.abs(currHex.col - endHex.col);
 			var yDistance = Math.abs(currHex.row - endHex.row);
-			if(xDistance > yDistance) {
-				return 1.4*yDistance + (xDistance - yDistance);
+			if (xDistance > yDistance) {
+				return 1.4 * yDistance + (xDistance - yDistance); // Weird magic numbers..?
 			} else {
-				return 1.4*xDistance + (yDistance - xDistance);
+				return 2.8 * xDistance + (yDistance - xDistance);
 			}
 
 		default:

@@ -267,6 +267,10 @@ HexagonGrid.prototype.isPointInTriangle = function isPointInTriangle(pt, v1, v2,
 
 HexagonGrid.prototype.mouseMoveEvent = function (e) {
 
+    if (running) {
+        return;
+    }
+
     var leftMouseDown = e.buttons === undefined ?
         e.which === 1 :
         (e.buttons & 1) === 1;
