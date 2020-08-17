@@ -1,8 +1,6 @@
 // Implementation of a* search
 
 var running = false;
-var abort = false;
-var clearBoard = false;
 var heuristic = heuristicMethod.DIAGONAL_SHORTCUT;
 
 var timeoutHandle;
@@ -26,10 +24,10 @@ function onHeuristicChange(newValue) {
 }
 
 function runAlgorithm() {
-	if(running) {
-        abort = true;
+	if (running) {
+        endAlgorithm();
     }
-    else if(!hexagonGrid.startTile) {
+    else if (!hexagonGrid.startTile) {
     	alert("You must have a starting position set");
 		return;
     }
@@ -41,10 +39,13 @@ function runAlgorithm() {
 }
 
 function endAlgorithm() {
-	abort = false;
 	running = false;
-
 	document.getElementById("runbtn").textContent = "Run";
+
+	if (timeoutHandle) {
+		clearTimeout(timeoutHandle);
+		timeoutHandle = false;
+	}
 }
 
 function updateVisitedNodes(visitedNodes) {
@@ -62,15 +63,6 @@ function runAStar(hexGrid, sliderId) {
 	};
 
 	whileLoop = function(slowEval) {
-
-			// Command to abort the algorithm has been issued
-			if (abort) {
-				if (clearBoard) {
-					hexGrid.clearHexes();
-				}
-				endAlgorithm();
-				return;
-			}
 
 			if (openList.length == 0) {
 				endAlgorithm();

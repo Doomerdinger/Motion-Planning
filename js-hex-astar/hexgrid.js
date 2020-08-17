@@ -75,13 +75,16 @@ HexagonGrid.prototype.drawHexGrid = function () {
 };
 
 HexagonGrid.prototype.clearHexes = function() {
+    if (running) {
+        return;
+    }
+
     for (var col = 0; col < this.cols; col++) {
         for (var row = 0; row < this.rows; row++) {
             this.hexes[col][row].setEmpty();
         }
     }
     this.startTile = false;
-    clearBoard = false;
     this.drawHexGrid();
 
     document.getElementById("info-hud").innerHTML = "";
