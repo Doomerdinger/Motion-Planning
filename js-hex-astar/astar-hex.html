@@ -17,6 +17,13 @@
     </div>
 
     <table id="button-container">
+        <tr>
+            <td><label>Draw tools:</label>
+            <button id="btnorigin" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ORIGIN)">Start Position</button>
+            <button id="btnwaypoint" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.GOAL);">Waypoint</button>
+            <button id="btnobstacle" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.OBSTACLE);">Obstacle</button>
+            <button id="btneraser" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ERASER);">Eraser</button></td>
+        </tr>
     	<tr>
     		<td><button id="runbtn" class="controlbutton" type="button" onclick="runAlgorithm();">Run</button>
     		<button class="controlbutton" type="button" onclick="hexagonGrid.clearHexes();">Clear all</button></td>
@@ -34,12 +41,6 @@
                 <option value="0">None</option>
             </select>
         </td></tr>
-        <tr>
-            <td><button id="btnorigin" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ORIGIN)">Start Position</button>
-            <button id="btnwaypoint" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.GOAL);">Waypoint</button>
-            <button id="btnobstacle" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.OBSTACLE);">Obstacle</button>
-            <button id="btneraser" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ERASER);">Eraser</button></td>
-        </tr>
     </table>
 
     <div id="linkDiv">
