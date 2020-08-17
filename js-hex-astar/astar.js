@@ -1,5 +1,4 @@
 // Implementation of a* search
-//
 
 var running = false;
 var abort = false;
@@ -205,9 +204,10 @@ function runAStar(hexGrid, sliderId) {
 	whileLoop(true);
 }
 
+// Heuristic function
 function computeH(currHex, endHex) {
-	// Manhattan distance
-	//return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row); // Manhattan (city block) dist
+	// Manhattan (city block) distance
+	//return Math.abs(currHex.col - endHex.col) + Math.abs(currHex.row - endHex.row);
 	
 	// Uses real distance function
 	//return currHex.distanceTo(endHex);

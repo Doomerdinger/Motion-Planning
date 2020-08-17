@@ -10,10 +10,12 @@
 
     <div id="info-hud"> </div>
 
-	<canvas id="hexcan" width="2000" height="750"></canvas>
+    <div id="canvas-container">
+        <canvas id="hexcan"></canvas>
+    </div>
 
     <script>
-        var hexagonGrid = new HexagonGrid("hexcan", 15, 5, 5, 28, 80);
+        var hexagonGrid = new HexagonGrid("hexcan", 15, 20, 20);
         hexagonGrid.drawHexGrid();
     </script>
 

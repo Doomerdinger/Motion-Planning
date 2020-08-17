@@ -1,5 +1,5 @@
-// Originally authored by rrreese at https://github.com/rrreese/Hexagon.js
-// Edited by Advanced Graphics motion planning team
+// Based off of code by rrreese at https://github.com/rrreese/Hexagon.js
+// Edited heavily by Advanced Graphics motion planning team
 
 // Hex math defined here: http://blog.ruslans.com/2011/02/hexagonal-grid-math.html
 
@@ -7,7 +7,7 @@ mouseDown = [0, 0, 0];
 someButtonDown = 0;
 lastTileClicked = null;
 
-function HexagonGrid(canvasId, radius, originX, originY, rows, cols) {
+function HexagonGrid(canvasId, radius, originX, originY) {
 
     this.startTile = false;
 
@@ -15,12 +15,22 @@ function HexagonGrid(canvasId, radius, originX, originY, rows, cols) {
 
     this.height = Math.sqrt(3) * radius;
     this.width = 2 * radius;
-    this.rows = rows;
-    this.cols = cols;
 
     this.side = (3 / 2) * radius;
 
     this.canvas = document.getElementById(canvasId);
+
+    this.canvas.width = this.canvas.parentElement.clientWidth - originX;
+    this.canvas.height = this.canvas.parentElement.clientHeight - originY;
+
+    // Calculate hex row and column count
+    this.cols = Math.floor((this.canvas.width - originX) / this.side);
+    this.rows = Math.floor((this.canvas.height - originY) / this.height);
+
+    // Subtract one from the result to prevent overcounting by one
+    this.cols--;
+    this.rows--;
+
     this.context = this.canvas.getContext('2d');
 
     this.canvasOriginX = originX;
