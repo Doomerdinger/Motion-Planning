@@ -3,8 +3,6 @@
 
 // Hex math defined here: http://blog.ruslans.com/2011/02/hexagonal-grid-math.html
 
-lastTileClicked = null;
-
 function HexagonGrid(canvasId, radius, originX, originY) {
 
     this.startTile = false;
@@ -85,8 +83,6 @@ HexagonGrid.prototype.clearHexes = function() {
     this.startTile = false;
     clearBoard = false;
     this.drawHexGrid();
-
-    lastTileClicked = null;
 
     document.getElementById("info-hud").innerHTML = "";
 }
@@ -275,7 +271,7 @@ HexagonGrid.prototype.mouseMoveEvent = function (e) {
         e.which === 1 :
         (e.buttons & 1) === 1;
 
-    if(!leftMouseDown) {
+    if (!leftMouseDown) {
         return;
     }
 
@@ -286,12 +282,7 @@ HexagonGrid.prototype.mouseMoveEvent = function (e) {
     var localY = mouseY - this.canvasOriginY;
 
     var pos = this.getSelectedTile(localX, localY);
-    if(lastTileClicked && lastTileClicked.x == pos.x && lastTileClicked.y == pos.y) {
-        return;
-    }
-    lastTileClicked = pos;
-
-    if(pos.x < this.cols && pos.y < this.rows && pos.x >= 0 && pos.y >= 0)
+    if(pos.x < this.cols && pos.y < this.rows && pos.x >= 0 && pos.y >= 0) // If within bounds
     {
         var tile = this.hexes[pos.x][pos.y];
         switch (this.currentBrush)
