@@ -52,7 +52,7 @@ function runAStar(hexGrid, sliderId) {
 
 			if (openList.length == 0) {
 				endAlgorithm();
-				alert("No solution found!");
+				alert("No solution: at least one waypoint is inaccessible");
 				return;
 			}
 
