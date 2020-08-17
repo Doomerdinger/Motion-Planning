@@ -238,9 +238,9 @@ function computeH(currHex, endHex) {
 			var xDistance = Math.abs(currHex.col - endHex.col);
 			var yDistance = Math.abs(currHex.row - endHex.row);
 			if (xDistance > yDistance) {
-				return 1.4 * yDistance + (xDistance - yDistance); // Weird magic numbers..?
+				return 1.4 * yDistance + (xDistance - yDistance);
 			} else {
-				return 2.8 * xDistance + (yDistance - xDistance);
+				return 1.4 * xDistance + (yDistance - xDistance); // Weird magic numbers... Increasing improves unblocked traversal
 			}
 
 		default:

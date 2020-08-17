@@ -4,6 +4,11 @@ html, body {
 	overflow: hidden;
 }
 
+label {
+	font-size: 18px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
 .noselect {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -13,6 +18,12 @@ html, body {
 	user-select: none;
 	outline: none;
 	-webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+}
+
+.controlbutton {
+	padding: 18px 40px;
+	cursor: pointer;
+	font-size: 20px;
 }
 
 .brushbutton {
@@ -66,7 +77,7 @@ html, body {
 }
 
 #canvas-container {
-	height: 80%;
+	height: 75%;
 	width: 100%;
 	overflow: hidden;
 }
@@ -77,10 +88,10 @@ html, body {
 }
 
 #button-container {
+	height: 25%;
     position: absolute;
-    bottom: 5%;
-	right: 50%;
-	height: 20%;
+    bottom: 3%;
+	left: 5%;
 }
 
 #info-hud {
@@ -89,8 +100,8 @@ html, body {
 	font-weight: bold;
 	font-size: 20pt;
 	position: absolute;
-	top: 90%;
-	left: 5%;
+	bottom: 20%;
+	right: 5%;
 
 	text-shadow:
 	    -1px -1px 0 #000,

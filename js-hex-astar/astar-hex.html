@@ -18,29 +18,27 @@
 
     <table id="button-container">
     	<tr>
-    		<td><button type="button" onclick="runAlgorithm();" id="runbtn">Run</button></td>
-    		<td><button type="button" onclick="hexagonGrid.clearHexes(); abort = running; clearBoard = running;">Clear all</button></td>
+    		<td><button id="runbtn" class="controlbutton" type="button" onclick="runAlgorithm();">Run</button>
+    		<button class="controlbutton" type="button" onclick="hexagonGrid.clearHexes(); abort = running; clearBoard = running;">Clear all</button></td>
     	</tr>
+        <tr><td>
+            <label for="speed-slider">Simulation speed:</label>
+            <input id="speed-slider" type="range" min="0" max="80" value="40" step="1" oninput="onSpeedChange()"/>
+        </td></tr>
+        <tr><td>
+            <label for="heuristic-dropdown">Heuristic method:</label>
+            <select name="heuristic-dropdown" id="heuristic-dropdown" onchange="onHeuristicChange(this.value)">
+                <option value="3">Diagonal Shortcut</option>
+                <option value="1">Manhattan Distance</option>
+                <option value="2">Real Distance</option>
+                <option value="0">None</option>
+            </select>
+        </td></tr>
         <tr>
-            <td>
-                <label for="speed-slider">Simulation speed:</label>
-                <input id="speed-slider" type="range" min="0" max="80" value="40" step="1" oninput="onSpeedChange()"/>
-            </td>
-            <td>
-                <label for="heuristic-dropdown">Heuristic method:</label>
-                <select name="heuristic-dropdown" id="heuristic-dropdown" onchange="onHeuristicChange(this.value)">
-                    <option value="3">Diagonal Shortcut</option>
-                    <option value="1">Manhattan Distance</option>
-                    <option value="2">Real Distance</option>
-                    <option value="0">None</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><button id="btnorigin" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ORIGIN)">Start Position</button></td>
-            <td><button id="btnwaypoint" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.GOAL);">Waypoint</button></td>
-            <td><button id="btnobstacle" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.OBSTACLE);">Obstacle</button></td>
-            <td><button id="btneraser" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ERASER);">Eraser</button></td>
+            <td><button id="btnorigin" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ORIGIN)">Start Position</button>
+            <button id="btnwaypoint" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.GOAL);">Waypoint</button>
+            <button id="btnobstacle" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.OBSTACLE);">Obstacle</button>
+            <button id="btneraser" class="brushbutton noselect" type="button" onclick="onClickBrushButton(this, brushType.ERASER);">Eraser</button></td>
         </tr>
     </table>
 </body>
