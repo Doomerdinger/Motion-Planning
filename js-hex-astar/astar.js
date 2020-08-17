@@ -4,9 +4,20 @@ var running = false;
 var abort = false;
 var clearBoard = false;
 
+var timeoutHandle;
+var funcRequeueEval;
+
 // Get the value of the slider bar determining simulation speed
 function getSimTick(sliderId) {
-	return document.getElementById(sliderId).value;
+	var sliderValue = document.getElementById(sliderId).value;
+	return Math.pow(1.1, sliderValue) - 1;
+}
+
+function onSpeedChange() {
+	if (timeoutHandle) {
+		clearTimeout(timeoutHandle);
+		funcRequeueEval();
+	}
 }
 
 function runAlgorithm() {
@@ -39,7 +50,13 @@ function runAStar(hexGrid, sliderId) {
 
 	hexGrid.resetForRunningAlgorithm();
 
-	var whileLoop = function(slowEval) {
+	var whileLoop;
+	funcRequeueEval = function() {
+		var tick_ms = getSimTick(sliderId);
+		timeoutHandle = setTimeout(function() {whileLoop(tick_ms != 0)}, tick_ms);
+	};
+
+	whileLoop = function(slowEval) {
 
 			// Command to abort the algorithm has been issued
 			if (abort) {
@@ -176,9 +193,8 @@ function runAStar(hexGrid, sliderId) {
 	        }
 
 	        // Determines speed of evaluation based on the slider
-        	if(slowEval) {
-        		var tick_ms = getSimTick(sliderId);
-				setTimeout(function() {whileLoop(tick_ms != 0)}, tick_ms);
+        	if (slowEval) {
+				funcRequeueEval();
 			}
 			else {
 				whileLoop(false);
